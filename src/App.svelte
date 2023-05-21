@@ -1,39 +1,26 @@
 <script lang="ts">
     import type { SvelteComponent } from "svelte";
-    import InputField from "~/lib/InputField.svelte";
+    import InputField from "~/components/InputField.svelte";
     import CreatureComponent from "~/components/Creature.svelte";
     import Player from "~/lib/Models/Player";
-    import type Creature from "./lib/Models/Creature";
+    import { commands } from '~/lib/commands'
+    import Location from '~/lib/Location'
+    import { CommandCategory } from '~/lib/Command/Command'
 
     let playerOne = new Player('Escral');
     let playerTwo = new Player('Goblin');
 
+    let location = new Location()
+
+    location.addCreature(playerOne)
+    location.addCreature(playerTwo)
+
     let command = "";
-
-    let commandStack = []
-    let commandHistory = []
-
-    const commands = [
-        {
-            name: 'charge',
-            support: true,
-            action: (actor: Creature) => {
-                actor.stats.strength += 1;
-            },
-        },
-        {
-            name: "hit",
-            support: false,
-            action: (actor: Creature) => {
-                playerTwo.health -= actor.stats.strength;
-            },
-        },
-    ];
 
     let actor = playerOne;
 
-    const cast = () => {
-        const found = commands.find((c) => c.name === command);
+    const cast = (query: string) => {
+        const found = commands.find((c) => c.actName === query);
 
         if (!found) {
             console.log("Command not found");
@@ -43,20 +30,40 @@
             return;
         }
 
-        found.action(actor);
+        if (!found.canUse(actor, location)) {
+            console.log("Command cannot be used");
 
-        if (commandStack.length > 0) {
-            commandStack.push(command)
-            commandHistory.push(commandStack.join(' > '))
-            commandStack = []
-        } else if (found.support) {
-            commandStack.push(command);
-            commandStack = commandStack
-        } else {
-            commandHistory.push(command)
+            found.onFail(actor, location)
+
+            command = "";
+
+            return;
         }
 
-        commandHistory = commandHistory
+        found.beforeAct(actor, location);
+        found.act(actor, location);
+        found.afterAct(actor, location);
+
+        found.onSuccess(actor, location)
+
+        playerOne = playerOne
+        playerTwo = playerTwo
+
+        if (actor.commandStack.length > 0) {
+            actor.commandStack.push(command)
+            actor.commandHistory.push(actor.commandStack.join(' > '))
+
+            actor.commandStack.forEach((command) => {
+                const found = commands.find((c) => c.actName === command);
+                found.dispose(actor, location);
+            })
+
+            actor.commandStack = []
+        } else if (found.category === CommandCategory.Support) {
+            actor.commandStack.push(command);
+        } else {
+            actor.commandHistory.push(command)
+        }
 
         actor = actor === playerOne ? playerTwo : playerOne;
 
@@ -105,11 +112,11 @@
     <div class="p-12">
         <div class="flex items-center justify-between">
             <div>
-                <CreatureComponent {commandHistory} {commandStack} creature={playerOne}/>
+                <CreatureComponent acting={actor === playerOne} creature={playerOne}/>
             </div>
 
             <div>
-                <CreatureComponent class="flex-row-reverse" {commandHistory} {commandStack} creature={playerTwo}/>
+                <CreatureComponent class="flex-row-reverse" acting={actor === playerTwo} creature={playerTwo}/>
             </div>
         </div>
 
@@ -117,7 +124,7 @@
 
         <form
             class="fixed bottom-12 w-[40rem] left-1/2 -translate-x-1/2 flex flex-col gap-2"
-            on:submit|preventDefault={cast}
+            on:submit|preventDefault={() => cast(command)}
         >
             <div class="text-center text-xl">
                 {#if command.length}

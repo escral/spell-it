@@ -10,8 +10,8 @@ export default class Player extends Creature {
         agility: 0,
     }
 
-    constructor(...props) {
-        super(...props)
+    constructor(name: string) {
+        super(name)
 
         this.health = this.maxHealth
         this.mana = this.maxMana

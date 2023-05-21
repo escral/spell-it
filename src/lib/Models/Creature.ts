@@ -11,8 +11,39 @@ export default abstract class Creature {
         agility: 0,
     }
 
+    // ================
+
+    public commandStack: string[] = []
+    public commandHistory: string[] = []
+
+    // ================
+
     protected constructor(public name = 'Creature') {
         //
+    }
+
+    dealDamage(target: Creature) {
+        const damage = this.stats.strength
+
+        return target.takeDamage(damage)
+    }
+
+    takeDamage(damage: number) {
+        this.health = this.health - damage
+
+        return damage
+    }
+
+    gainStat(stat: keyof Stats, value: number) {
+        this.stats[stat] += value
+
+        console.log(`${this.name} gained ${value} ${stat}.`)
+    }
+
+    loseStat(stat: keyof Stats, value: number) {
+        this.stats[stat] -= value
+
+        console.log(`${this.name} lost ${value} ${stat}.`)
     }
 }
 
