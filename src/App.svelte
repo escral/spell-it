@@ -1,12 +1,12 @@
 <script lang="ts">
     import type { SvelteComponent } from "svelte";
     import InputField from "~/lib/InputField.svelte";
-    import Player from "~/lib/Components/Player.svelte";
-    import PlayerClass from "~/lib/Models/Player";
+    import CreatureComponent from "~/components/Creature.svelte";
+    import Player from "~/lib/Models/Player";
     import type Creature from "./lib/Models/Creature";
 
-    let playerOne = new PlayerClass();
-    let playerTwo = new PlayerClass();
+    let playerOne = new Player('Escral');
+    let playerTwo = new Player('Goblin');
 
     let command = "";
 
@@ -50,8 +50,8 @@
             commandHistory.push(commandStack.join(' > '))
             commandStack = []
         } else if (found.support) {
-           commandStack.push(command);
-           commandStack = commandStack
+            commandStack.push(command);
+            commandStack = commandStack
         } else {
             commandHistory.push(command)
         }
@@ -99,34 +99,40 @@
     };
 </script>
 
-<svelte:window on:keydown={onkeydown} />
+<svelte:window on:keydown={onkeydown}/>
 
 <main>
-    <div>
-        <div style="display: flex; justify-content: center; gap: 2rem">
+    <div class="p-12">
+        <div class="flex items-center justify-between">
             <div>
-                1:
-                <Player player={playerOne} />
-
-                {commandStack.join(' > ')}
-
-                <div style="color: #555; font-size: 13px">
-                    History:
-                    {commandHistory.join(', ')}
-                </div>
+                <CreatureComponent {commandHistory} {commandStack} creature={playerOne}/>
             </div>
+
             <div>
-                2:
-                <Player player={playerTwo} />
+                <CreatureComponent class="flex-row-reverse" {commandHistory} {commandStack} creature={playerTwo}/>
             </div>
         </div>
 
-        <br />
+        <br/>
 
-        <h1>Mode: {mode}</h1>
-        <h2>"{command}"</h2>
-        <form on:submit|preventDefault={cast}>
-            <InputField bind:this={input} bind:command />
+        <form
+            class="fixed bottom-12 w-[40rem] left-1/2 -translate-x-1/2 flex flex-col gap-2"
+            on:submit|preventDefault={cast}
+        >
+            <div class="text-center text-xl">
+                {#if command.length}
+                    «{command}»
+                {/if}
+            </div>
+
+            <InputField class="w-full" bind:this={input} bind:command/>
+
+            <div
+                class="bg-gray-500 text-white mx-auto w-fit leading-none py-1.5 px-3 rounded text-sm"
+                class:bg-blue-400={mode === Mode.Casting}
+            >
+                {mode}
+            </div>
         </form>
     </div>
 </main>

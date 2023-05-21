@@ -8,4 +8,4 @@
   let input: HTMLInputElement;
 </script>
 
-<input bind:this={input} type="text" bind:value={command} />
+<input class={$$restProps['class'] + ' input-field'} bind:this={input} type="text" bind:value={command} />
