@@ -8,6 +8,7 @@ import Toast from 'vue-toastification'
 import FloatingVue from 'floating-vue'
 import ModalPlugin from '~/plugins/ModalPlugin'
 import ConfirmPlugin from '~/plugins/ConfirmPlugin'
+import TranslationsPlugin from '~/plugins/TranslationsPlugin'
 
 // Components
 import App from '~/App.vue'
@@ -21,6 +22,7 @@ app.component('VueFeather', VueFeather)
 
 app.use(ModalPlugin)
 app.use(ConfirmPlugin)
+app.use(TranslationsPlugin)
 app.use(Toast, {
     hideProgressBar: true,
     transition: "Vue-Toastification__fade",

@@ -2,6 +2,7 @@ import State from "~/lib/State"
 import EventBus from "~/lib/EventBus"
 import type Location from "~/lib/Location";
 import type Player from '~/lib/Models/Player'
+import TimeController from '~/lib/TimeController'
 
 export enum Mode {
     Normal = "Normal",
@@ -22,6 +23,8 @@ export default class BattleState extends State {
     declare public location: Location
     declare public player: Player
 
+    public time = new TimeController()
+
     constructor(config: {
         location: Location,
         player: Player,
@@ -33,6 +36,10 @@ export default class BattleState extends State {
 
         this.state = reactive({
             mode: Mode.Normal,
+        })
+
+        this.time.eventBus.on('update', (deltaTime) => {
+            
         })
     }
 
@@ -47,4 +54,6 @@ export default class BattleState extends State {
 
         this.eventBus.emit("changeMode", mode, oldMode)
     }
+
+
 }

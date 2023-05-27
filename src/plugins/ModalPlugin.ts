@@ -1,6 +1,5 @@
-import { markRaw, reactive, resolveComponent } from "vue"
+import { type App, markRaw, reactive, resolveComponent } from "vue"
 import type { Component } from "vue"
-import type { AnyObject } from "~/types"
 
 export const modals = reactive(new Map<ModalKey, Modal>())
 
@@ -48,14 +47,14 @@ export const showModal = async (
     const key = _options.key || component
 
     if (!_options.place) {
-        _options.place = null
+        _options.place = undefined
     }
 
     if (modals.has(key)) {
         if (_options.onExists && typeof _options.onExists === 'function') {
             const modal = modals.get(key)
 
-            if (!_options.onExists(key, modal)) {
+            if (modal && !_options.onExists(key, modal)) {
                 return
             }
         } else {
@@ -137,7 +136,7 @@ export const findModal = (key: ModalKey) => {
 }
 
 export default {
-    install(app) {
+    install(app: App) {
         // Options API
         app.config.globalProperties.$modals = modals
         app.config.globalProperties.$showModal = showModal

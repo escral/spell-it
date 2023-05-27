@@ -1,10 +1,10 @@
 <script setup lang="ts">
-    import BattleState, { Mode } from "~/lib/BattleState"
+    import BattleState, {Mode} from "~/lib/BattleState"
     import ForestLocation from "~/lib/ForestLocation"
     import InputController from "~/lib/InputController"
     import Player from "~/lib/Models/Player"
-    import InputText from "~/components/Input/InputText.vue"
     import Creature from "~/components/UI/Creature.vue"
+    import PinnedCommands from "~/components/UI/PinnedCommands.vue";
 
     defineOptions({
         name: 'BattleView',
@@ -12,7 +12,7 @@
 
     const battle = new BattleState({
         location: new ForestLocation(),
-        player: new Player('Escral'),
+        player: reactive(new Player('Escral')),
     })
 
     const inputController = new InputController(battle)
@@ -20,14 +20,14 @@
     const mode = computed(() => battle.mode)
     const command = computed(() => inputController.currentCommand.value)
 
-    const tryCast = () => inputController.tryCast(battle.player)
-
     onMounted(() => {
         inputController.register()
+        battle.time.start()
     })
 
     onDeactivated(() => {
         inputController.unregister()
+        battle.time.stop()
     })
 </script>
 
@@ -41,6 +41,10 @@
                 :key="$i"
                 :creature="creature"
             />
+        </div>
+
+        <div class="mt-12">
+            <PinnedCommands />
         </div>
 
         <br>

@@ -1,6 +1,6 @@
 import type BattleState from "~/lib/BattleState"
 import { Mode } from "~/lib/BattleState"
-import { commands } from "~/lib/commands"
+import { commands } from "~/dictionaries/commands"
 import Command, { CommandCategory } from "~/lib/Command/Command"
 import type Creature from "~/lib/Models/Creature"
 
@@ -11,9 +11,8 @@ enum ModeKey {
 export default class InputController {
     public currentCommand = ref('')
 
-    constructor(private battleState: BattleState) {
-        //
-        battleState.eventBus.on('changeMode', () => {
+    constructor(private battle: BattleState) {
+        battle.eventBus.on('changeMode', () => {
             this.currentCommand.value = ''
         })
     }
@@ -27,7 +26,7 @@ export default class InputController {
     }
 
     private handleInput(e: KeyboardEvent) {
-        const mode = this.battleState.mode
+        const mode = this.battle.mode
 
         const prevent = () => {
             e.preventDefault()
@@ -36,17 +35,17 @@ export default class InputController {
         }
 
         if (e.key === ModeKey.Casting && mode === Mode.Normal) {
-            this.battleState.changeMode(Mode.Casting)
+            this.battle.changeMode(Mode.Casting)
 
             prevent()
         }
 
         if (e.key === "Escape") {
-            this.battleState.changeMode(Mode.Normal)
+            this.battle.changeMode(Mode.Normal)
         }
 
         if (e.key === "Enter" && mode === Mode.Casting) {
-            this.tryCast(this.battleState.player)
+            this.tryCast(this.battle.player)
         }
 
         if (mode === Mode.Casting && e.code.startsWith('Key')) {
@@ -57,7 +56,7 @@ export default class InputController {
     }
 
     public cast(command: Command, actor: Creature) {
-        const location = this.battleState.location
+        const location = this.battle.location
 
         if (!command.canUse(actor, location)) {
             command.onFail(actor, location)
@@ -101,10 +100,6 @@ export default class InputController {
         if (!found) {
             console.log("Command not found")
 
-            if (!this.currentCommand.value.length) {
-                this.battleState.changeMode(Mode.Normal)
-            }
-
             this.resetCommand()
 
             return
@@ -117,7 +112,5 @@ export default class InputController {
         }
 
         this.resetCommand()
-
-        this.battleState.changeMode(Mode.Normal)
     }
 }

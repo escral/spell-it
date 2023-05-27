@@ -1,4 +1,4 @@
-import type { Component } from "vue"
+import type { App, Component } from "vue"
 import type { ModalPayload } from "~/plugins/ModalPlugin"
 import type { ModalOptions } from "~/plugins/ModalPlugin"
 import { MessageType } from "~/types/enums/MessageType"
@@ -47,7 +47,7 @@ export const $confirm: ConfirmModalFunction = async function (
 }
 
 export default {
-    install(app) {
+    install(app: App) {
         // Options API
         app.config.globalProperties.$confirm = $confirm
 
