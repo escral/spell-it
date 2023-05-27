@@ -4,26 +4,55 @@ import { commands } from "~/lib/commands"
 import Command, { CommandCategory } from "~/lib/Command/Command"
 import type Creature from "~/lib/Models/Creature"
 
+enum ModeKey {
+    Casting = 'c',
+}
+
 export default class InputController {
-    public currentCommand = ""
+    public currentCommand = ref('')
 
     constructor(private battleState: BattleState) {
         //
+        battleState.eventBus.on('changeMode', () => {
+            this.currentCommand.value = ''
+        })
     }
 
-    public handleInput(e: KeyboardEvent) {
+    public register() {
+        window.addEventListener("keydown", this.handleInput.bind(this))
+    }
+
+    public unregister() {
+        window.removeEventListener("keydown", this.handleInput.bind(this))
+    }
+
+    private handleInput(e: KeyboardEvent) {
         const mode = this.battleState.mode
 
-        if (e.key === "c" && mode === Mode.Normal) {
-            this.battleState.changeMode(Mode.Casting)
-
+        const prevent = () => {
             e.preventDefault()
             e.stopPropagation()
             e.stopImmediatePropagation()
         }
 
+        if (e.key === ModeKey.Casting && mode === Mode.Normal) {
+            this.battleState.changeMode(Mode.Casting)
+
+            prevent()
+        }
+
         if (e.key === "Escape") {
             this.battleState.changeMode(Mode.Normal)
+        }
+
+        if (e.key === "Enter" && mode === Mode.Casting) {
+            this.tryCast(this.battleState.player)
+        }
+
+        if (mode === Mode.Casting && e.code.startsWith('Key')) {
+            this.currentCommand.value += e.key
+
+            prevent()
         }
     }
 
@@ -60,13 +89,23 @@ export default class InputController {
         }
     }
 
-    public tryCast(query: string, actor: Creature) {
+    public resetCommand() {
+        this.currentCommand.value = ''
+    }
+
+    public tryCast(actor: Creature) {
+        const query = this.currentCommand.value
+
         const found = commands.find((c) => c.actName === query)
 
         if (!found) {
             console.log("Command not found")
 
-            this.currentCommand = ""
+            if (!this.currentCommand.value.length) {
+                this.battleState.changeMode(Mode.Normal)
+            }
+
+            this.resetCommand()
 
             return
         }
@@ -74,10 +113,10 @@ export default class InputController {
         try {
             this.cast(found, actor)
         } catch (e) {
-            this.currentCommand = ""
+            //
         }
 
-        this.currentCommand = ""
+        this.resetCommand()
 
         this.battleState.changeMode(Mode.Normal)
     }

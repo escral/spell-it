@@ -1,26 +1,35 @@
 {
-  "name": "spell-it",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
-  },
-  "devDependencies": {
-    "@escral/eslint-config-vue-typescript": "^1.0.9",
-    "@sveltejs/vite-plugin-svelte": "^2.0.3",
-    "@tsconfig/svelte": "^4.0.1",
-    "postcss": "^8.4.23",
-    "postcss-import": "^15.1.0",
-    "svelte": "^3.57.0",
-    "svelte-check": "^2.10.3",
-    "tailwindcss": "^3.3.2",
-    "tslib": "^2.5.0",
-    "typescript": "^5.0.2",
-    "vite": "^4.3.2"
-  },
-  "dependencies": {}
+    "name": "spell-it",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite serve",
+        "preview": "vite preview",
+        "fix": "eslint --fix"
+    },
+    "dependencies": {
+        "feather-icons": "^4.29.0",
+        "floating-vue": "^2.0.0-beta.20",
+        "vue-feather": "^2.0.0",
+        "vue-router": "^4.2.1",
+        "vue-toastification": "^2.0.0-rc.5"
+    },
+    "devDependencies": {
+        "@escral/eslint-config-vue-typescript": "^1.0.9",
+        "postcss": "^8.4.23",
+        "@vitejs/plugin-vue": "^4.0.0",
+        "postcss-import": "^15.1.0",
+        "tailwindcss": "^3.3.2",
+        "typescript": "^5.0.4",
+        "vite": "^4.3.9",
+        "@vueuse/core": "^10.1.2",
+        "vite-svg-loader": "^4.0.0",
+        "unplugin-auto-import": "^0.16.2",
+        "vue": "^3.3.4",
+        "@types/node": "^18.16.16",
+        "@tailwindcss/forms": "^0.5.3",
+        "@popperjs/core": "^2.11.6"
+    }
 }

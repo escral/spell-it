@@ -1,7 +1,7 @@
 import State from "~/lib/State"
 import EventBus from "~/lib/EventBus"
-import InputController from "~/lib/InputController"
 import type Location from "~/lib/Location";
+import type Player from '~/lib/Models/Player'
 
 export enum Mode {
     Normal = "Normal",
@@ -13,22 +13,27 @@ type BattleStateType = {
 }
 
 export default class BattleState extends State {
-    public eventBus: EventBus = new EventBus()
+    public eventBus = new EventBus<{
+        changeMode: (mode: Mode, oldMode: Mode) => void
+    }>()
 
     declare private state: BattleStateType
 
     declare public location: Location
+    declare public player: Player
 
     constructor(config: {
         location: Location,
+        player: Player,
     }) {
         super()
 
         this.location = config.location
+        this.player = config.player
 
-        this.state = {
+        this.state = reactive({
             mode: Mode.Normal,
-        }
+        })
     }
 
     get mode() {
@@ -36,8 +41,10 @@ export default class BattleState extends State {
     }
 
     public changeMode(mode: Mode) {
+        const oldMode = this.state.mode
+
         this.state.mode = mode
 
-        this.eventBus.emit("changeMode", mode)
+        this.eventBus.emit("changeMode", mode, oldMode)
     }
 }

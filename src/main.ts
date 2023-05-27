@@ -1,8 +1,48 @@
-import '~/assets/styles/App.css'
-import App from '~/App.svelte'
+import { createApp } from 'vue'
 
-const app = new App({
-  target: document.getElementById('app'),
+// import core & assets styles
+import '~/assets/styles/App.pcss'
+
+// Plugins
+import Toast from 'vue-toastification'
+import FloatingVue from 'floating-vue'
+import ModalPlugin from '~/plugins/ModalPlugin'
+import ConfirmPlugin from '~/plugins/ConfirmPlugin'
+
+// Components
+import App from '~/App.vue'
+import VueFeather from 'vue-feather'
+
+//
+
+const app = createApp(App)
+
+app.component('VueFeather', VueFeather)
+
+app.use(ModalPlugin)
+app.use(ConfirmPlugin)
+app.use(Toast, {
+    hideProgressBar: true,
+    transition: "Vue-Toastification__fade",
+    timeout: 2000,
+})
+app.use(FloatingVue, {
+    themes: {
+        tooltip: {
+            html: true,
+            delay: {
+                show: 0,
+                hide: 0,
+            },
+        },
+    },
 })
 
-export default app
+// Declare directives to avoid warnings
+// noinspection PointlessBooleanExpressionJS
+if (false) {
+    // noinspection UnreachableCodeJS
+    app.directive('tooltip', {})
+}
+
+app.mount('#app')

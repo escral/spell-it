@@ -2,8 +2,8 @@ export default abstract class Creature {
     public health = 10
     public mana = 0
 
-    public maxHealth: number = 10
-    public maxMana: number = 0
+    public maxHealth = 10
+    public maxMana = 0
 
     public stats: Stats = {
         strength: 0,
