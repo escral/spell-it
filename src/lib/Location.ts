@@ -1,9 +1,12 @@
 import type Creature from '~/lib/Models/Creature'
 
-export default class Location {
-    constructor() {
+export type LocationInfo = {
+    name: string
+    description: string
+}
 
-    }
+export default abstract class Location {
+    abstract get info(): LocationInfo
 
     creatures: Creature[] = []
 

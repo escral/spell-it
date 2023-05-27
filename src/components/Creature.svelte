@@ -25,15 +25,15 @@
                 <ProgressBar color="bg-blue-500" value={creature.mana} maxValue={creature.maxMana}/>
             </div>
 
-            <div>
-                <div>
-                    Strength: {creature.stats.strength}
+            <div class="grid grid-cols-3 gap-4 text-center">
+                <div class="" class:opacity-30={!creature.stats.strength}>
+                    <i class="fa-solid fa-hand-fist"></i> {creature.stats.strength}
                 </div>
-                <div>
-                    Agility: {creature.stats.agility}
+                <div class="" class:opacity-30={!creature.stats.agility}>
+                    <i class="fa-solid fa-hourglass"></i> {creature.stats.agility}
                 </div>
-                <div>
-                    Intelligence: {creature.stats.intelligence}
+                <div class="" class:opacity-30={!creature.stats.intelligence}>
+                    <i class="fa-solid fa-book"></i> {creature.stats.intelligence}
                 </div>
             </div>
         </div>

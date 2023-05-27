@@ -1,112 +1,35 @@
 <script lang="ts">
-    import type { SvelteComponent } from "svelte";
-    import InputField from "~/components/InputField.svelte";
-    import CreatureComponent from "~/components/Creature.svelte";
-    import Player from "~/lib/Models/Player";
-    import { commands } from '~/lib/commands'
-    import Location from '~/lib/Location'
-    import { CommandCategory } from '~/lib/Command/Command'
+    import type { SvelteComponent } from "svelte"
+    import InputField from "~/components/InputField.svelte"
+    import CreatureComponent from "~/components/Creature.svelte"
+    import Player from "~/lib/Models/Player"
+    import BattleState, { Mode } from '~/lib/BattleState'
+    import ForestLocation from '~/lib/ForestLocation'
+    import InputController from '~/lib/InputController'
 
-    let playerOne = new Player('Escral');
-    let playerTwo = new Player('Goblin');
+    const battle = new BattleState({
+        location: new ForestLocation(),
+    })
 
-    let location = new Location()
+    const inputController = new InputController(battle)
 
-    location.addCreature(playerOne)
-    location.addCreature(playerTwo)
+    const playerOne = new Player('Escral')
+    const playerTwo = new Player('Goblin')
 
-    let command = "";
+    battle.location.addCreature(playerOne)
 
-    let actor = playerOne;
+    const command = ""
 
-    const cast = (query: string) => {
-        const found = commands.find((c) => c.actName === query);
+    const actor = playerOne
 
-        if (!found) {
-            console.log("Command not found");
+    $: mode = battle.mode
 
-            command = "";
+    let input: SvelteComponent
 
-            return;
-        }
-
-        if (!found.canUse(actor, location)) {
-            console.log("Command cannot be used");
-
-            found.onFail(actor, location)
-
-            command = "";
-
-            return;
-        }
-
-        found.beforeAct(actor, location);
-        found.act(actor, location);
-        found.afterAct(actor, location);
-
-        found.onSuccess(actor, location)
-
-        playerOne = playerOne
-        playerTwo = playerTwo
-
-        if (actor.commandStack.length > 0) {
-            actor.commandStack.push(command)
-            actor.commandHistory.push(actor.commandStack.join(' > '))
-
-            actor.commandStack.forEach((command) => {
-                const found = commands.find((c) => c.actName === command);
-                found.dispose(actor, location);
-            })
-
-            actor.commandStack = []
-        } else if (found.category === CommandCategory.Support) {
-            actor.commandStack.push(command);
-        } else {
-            actor.commandHistory.push(command)
-        }
-
-        actor = actor === playerOne ? playerTwo : playerOne;
-
-        command = "";
-
-        changeMode(Mode.Normal);
-    };
-
-    enum Mode {
-        Normal = "Normal",
-        Casting = "Casting",
-    }
-
-    let mode = Mode.Normal;
-
-    let input: SvelteComponent;
-
-    const changeMode = (newMode: Mode) => {
-        mode = newMode;
-
-        command = "";
-
-        if (mode === Mode.Casting) {
-            input.focus();
-        }
-    };
-
-    const onkeydown = (e: KeyboardEvent) => {
-        if (e.key === "c" && mode === Mode.Normal) {
-            changeMode(Mode.Casting);
-
-            e.preventDefault();
-            e.stopPropagation();
-            e.stopImmediatePropagation();
-        }
-
-        if (e.key === "Escape") {
-            changeMode(Mode.Normal);
-        }
-    };
+    const tryCast = () => inputController.tryCast(command, playerOne)
 </script>
 
-<svelte:window on:keydown={onkeydown}/>
+<svelte:window on:keydown={battle.handleInput}/>
 
 <main>
     <div class="p-12">
@@ -120,19 +43,19 @@
             </div>
         </div>
 
-        <br/>
+        <br />
 
         <form
             class="fixed bottom-12 w-[40rem] left-1/2 -translate-x-1/2 flex flex-col gap-2"
-            on:submit|preventDefault={() => cast(command)}
+            on:submit|preventDefault={tryCast}
         >
             <div class="text-center text-xl">
-                {#if command.length}
-                    «{command}»
+                {#if inputController.currentCommand.length}
+                    «{inputController.currentCommand}»
                 {/if}
             </div>
 
-            <InputField class="w-full" bind:this={input} bind:command/>
+            <InputField class="w-full" bind:this={input} bind:command={inputController.currentCommand} />
 
             <div
                 class="bg-gray-500 text-white mx-auto w-fit leading-none py-1.5 px-3 rounded text-sm"
