@@ -1,9 +1,15 @@
-import Creature from '~/lib/Models/Creature'
+import type Creature from '~/lib/Models/Creature'
 import type Location from '~/lib/Location'
 
 export enum CommandCategory {
     Attack,
     Support,
+}
+
+export enum Signature {
+    Command = 'command',
+    Target = 'target',
+    Name = 'name',
 }
 
 export default abstract class Command {
@@ -13,6 +19,7 @@ export default abstract class Command {
 
     public abstract readonly title: string
     public readonly description: string | undefined
+    public readonly signature: Signature[] = [Signature.Command]
 
     public get actName() {
         return this.originalName

@@ -4,7 +4,7 @@
     import InputController from "~/lib/InputController"
     import Player from "~/lib/Models/Player"
     import Creature from "~/components/UI/Creature.vue"
-    import PinnedCommands from "~/components/UI/PinnedCommands.vue";
+    import PinnedCommands from "~/components/UI/PinnedCommands.vue"
 
     defineOptions({
         name: 'BattleView',
@@ -28,6 +28,14 @@
     onDeactivated(() => {
         inputController.unregister()
         battle.time.stop()
+    })
+
+    watch(mode, (mode) => {
+        if (mode === Mode.Paused) {
+            document.body.style.filter = 'grayscale(1)'
+        } else {
+            document.body.style.filter = ''
+        }
     })
 </script>
 
@@ -55,8 +63,12 @@
             </div>
 
             <div
-                class="bg-gray-500 text-white mx-auto w-fit leading-none py-1.5 px-3 rounded text-sm"
-                :class="{'bg-blue-500': mode === Mode.Casting}"
+                class="text-white mx-auto w-fit leading-none py-1.5 px-3 rounded text-sm"
+                :class="{
+                    'bg-slate-500': mode === Mode.Normal,
+                    'bg-blue-500': mode === Mode.Casting,
+                    'bg-gray-500': mode === Mode.Paused,
+                }"
             >
                 {{ mode }}
             </div>

@@ -7,7 +7,7 @@ export default class TimeController {
     private lastUpdateTime = 0
     private accumulatedTime = 0
 
-    private isPaused = false
+    private _isPaused = false
     private isInitialized = false
 
     public eventBus = new EventBus<{
@@ -23,6 +23,10 @@ export default class TimeController {
 
     constructor() {
         this._gameLoop = this.gameLoop.bind(this)
+    }
+
+    get isPaused() {
+        return this._isPaused
     }
 
     public start() {
@@ -45,19 +49,19 @@ export default class TimeController {
     }
 
     public pause() {
-        this.isPaused = true
+        this._isPaused = true
 
         this.eventBus.emit('pause')
     }
 
     public resume() {
-        if (!this.isPaused) {
+        if (!this._isPaused) {
             return
         }
 
         this.eventBus.emit('resume')
 
-        this.isPaused = false
+        this._isPaused = false
         this.lastUpdateTime = performance.now()
         requestAnimationFrame(this._gameLoop)
     }
@@ -67,7 +71,7 @@ export default class TimeController {
             return
         }
 
-        if (this.isPaused) {
+        if (this._isPaused) {
             // If paused, simply return without updating or rendering
             requestAnimationFrame(this._gameLoop)
             return
@@ -89,5 +93,28 @@ export default class TimeController {
 
         // Call the next frame
         requestAnimationFrame(this._gameLoop)
+    }
+
+    public timer(ms: number, callback: (stop: () => void) => void, interval = false) {
+        let timer = 0
+
+        const stop = this.eventBus.on('update', (deltaTime) => {
+            timer += deltaTime
+
+            if (Math.ceil(timer) >= ms) {
+                callback(stop)
+                timer = 0
+
+                if (!interval) {
+                    stop()
+                }
+            }
+        })
+
+        return stop
+    }
+
+    public interval(ms: number, callback: () => void) {
+        return this.timer(ms, callback, true)
     }
 }

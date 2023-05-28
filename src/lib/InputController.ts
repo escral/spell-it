@@ -12,8 +12,14 @@ export default class InputController {
     public currentCommand = ref('')
 
     constructor(private battle: BattleState) {
-        battle.eventBus.on('changeMode', () => {
+        battle.eventBus.on('changeMode', (mode) => {
             this.currentCommand.value = ''
+
+            if (mode === Mode.Paused) {
+                this.battle.time.pause()
+            } else {
+                this.battle.time.resume()
+            }
         })
     }
 
@@ -40,12 +46,22 @@ export default class InputController {
             prevent()
         }
 
-        if (e.key === "Escape") {
+        if (e.key === "Escape" || e.key === "CapsLock") {
             this.battle.changeMode(Mode.Normal)
+
+            prevent()
         }
 
         if (e.key === "Enter" && mode === Mode.Casting) {
             this.tryCast(this.battle.player)
+        }
+
+        if (e.key === 'p' && mode !== Mode.Casting) {
+            if (this.battle.mode === Mode.Paused) {
+                this.battle.changeMode(Mode.Normal)
+            } else {
+                this.battle.changeMode(Mode.Paused)
+            }
         }
 
         if (mode === Mode.Casting && e.code.startsWith('Key')) {

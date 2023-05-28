@@ -7,6 +7,7 @@ import TimeController from '~/lib/TimeController'
 export enum Mode {
     Normal = "Normal",
     Casting = "Casting",
+    Paused = "Paused",
 }
 
 type BattleStateType = {
@@ -37,10 +38,6 @@ export default class BattleState extends State {
         this.state = reactive({
             mode: Mode.Normal,
         })
-
-        this.time.eventBus.on('update', (deltaTime) => {
-            
-        })
     }
 
     get mode() {
@@ -54,6 +51,4 @@ export default class BattleState extends State {
 
         this.eventBus.emit("changeMode", mode, oldMode)
     }
-
-
 }
