@@ -3,6 +3,7 @@ import EventBus from "~/lib/EventBus"
 import type Location from "~/lib/Location";
 import type Player from '~/lib/Models/Player'
 import TimeController from '~/lib/TimeController'
+import BattleLog from '~/lib/BattleLog'
 
 export enum Mode {
     Normal = "Normal",
@@ -24,6 +25,7 @@ export default class BattleState extends State {
     declare public location: Location
     declare public player: Player
 
+    public log = new BattleLog()
     public time = new TimeController()
 
     constructor(config: {

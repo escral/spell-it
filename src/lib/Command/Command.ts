@@ -1,5 +1,5 @@
 import type Creature from '~/lib/Models/Creature'
-import type Location from '~/lib/Location'
+import type BattleState from '~/lib/BattleState'
 
 export enum CommandCategory {
     Attack,
@@ -25,31 +25,31 @@ export default abstract class Command {
         return this.originalName
     }
 
-    public canUse(actor: Creature, location: Location) {
+    public canUse(actor: Creature, battle: BattleState) {
         return true
     }
 
-    public beforeAct(actor: Creature, location: Location) {
+    public beforeAct(actor: Creature, battle: BattleState) {
         //
     }
 
-    public act(actor: Creature, location: Location) {
+    public act(actor: Creature, battle: BattleState) {
         //
     }
 
-    public afterAct(actor: Creature, location: Location) {
+    public afterAct(actor: Creature, battle: BattleState) {
         //
     }
 
-    public onFail(actor: Creature, location: Location) {
+    public onFail(actor: Creature, battle: BattleState) {
         //
     }
 
-    public onSuccess(actor: Creature, location: Location) {
+    public onSuccess(actor: Creature, battle: BattleState) {
         //
     }
 
-    public dispose(actor: Creature, location: Location) {
+    public dispose(actor: Creature, battle: BattleState) {
         //
     }
 }

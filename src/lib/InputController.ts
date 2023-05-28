@@ -72,19 +72,19 @@ export default class InputController {
     }
 
     public cast(command: Command, actor: Creature) {
-        const location = this.battle.location
+        const battle = this.battle
 
-        if (!command.canUse(actor, location)) {
-            command.onFail(actor, location)
+        if (!command.canUse(actor, battle)) {
+            command.onFail(actor, battle)
 
             throw new Error('Command cannot be used')
         }
 
-        command.beforeAct(actor, location)
-        command.act(actor, location)
-        command.afterAct(actor, location)
+        command.beforeAct(actor, battle)
+        command.act(actor, battle)
+        command.afterAct(actor, battle)
 
-        command.onSuccess(actor, location)
+        command.onSuccess(actor, battle)
 
         if (actor.commandStack.length > 0) {
             actor.commandStack.push(command.actName)
@@ -93,7 +93,7 @@ export default class InputController {
             actor.commandStack.forEach((name) => {
                 const found = commands.find((c) => c.actName === name)
 
-                found?.dispose(actor, location)
+                found?.dispose(actor, battle)
             })
 
             actor.commandStack = []

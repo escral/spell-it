@@ -1,9 +1,9 @@
 export default abstract class Creature {
-    public health = 10
-    public mana = 0
+    declare public health: number
+    declare public mana: number
 
-    public maxHealth = 10
-    public maxMana = 0
+    declare public maxHealth: number
+    declare public maxMana: number
 
     public stats: Stats = {
         strength: 0,
@@ -19,7 +19,12 @@ export default abstract class Creature {
     // ================
 
     protected constructor(public name = 'Creature') {
-        //
+        this.fullStats()
+    }
+
+    public fullStats() {
+        this.health = this.maxHealth
+        this.mana = this.maxMana
     }
 
     dealDamage(target: Creature) {
@@ -37,13 +42,13 @@ export default abstract class Creature {
     gainStat(stat: keyof Stats, value: number) {
         this.stats[stat] += value
 
-        console.log(`${this.name} gained ${value} ${stat}.`)
+        return value
     }
 
     loseStat(stat: keyof Stats, value: number) {
         this.stats[stat] -= value
 
-        console.log(`${this.name} lost ${value} ${stat}.`)
+        return value
     }
 }
 

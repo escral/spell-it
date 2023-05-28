@@ -1,5 +1,5 @@
 import Location, { type LocationInfo } from "~/lib/Location"
-import Player from "~/lib/Models/Player"
+import GoblinCreature from '~/lib/Models/Creatures/GoblinCreature'
 
 export default class ForestLocation extends Location {
     get info(): LocationInfo {
@@ -12,7 +12,7 @@ export default class ForestLocation extends Location {
     constructor() {
         super()
 
-        this.addCreature(reactive(new Player('Goblin 1')))
-        this.addCreature(reactive(new Player('Goblin 2')))
+        this.addCreature(reactive(new GoblinCreature('Goblin 1')))
+        this.addCreature(reactive(new GoblinCreature('Goblin 2')))
     }
 }

@@ -1,8 +1,8 @@
 import Creature from "~/lib/Models/Creature"
 
-export default class Player extends Creature {
-    public maxHealth = 10
-    public maxMana = 50
+export default class GoblinCreature extends Creature {
+    public maxHealth = 5
+    public maxMana = 0
 
     public stats = {
         strength: 1,
@@ -10,7 +10,7 @@ export default class Player extends Creature {
         agility: 0,
     }
 
-    constructor(name: string) {
+    constructor(name = 'Goblin') {
         super(name)
 
         this.fullStats()

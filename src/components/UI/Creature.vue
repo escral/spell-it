@@ -17,9 +17,9 @@
 </script>
 
 <template>
-    <div class="flex gap-x-12">
+    <div class="flex flex-col gap-x-12">
         <div
-            class="bg-blue-100 rounded-lg p-8 w-80 border-2 rounded"
+            class="bg-blue-100 rounded-lg p-8 border-2"
             :class="acting ? 'border-blue-500' : ' border-blue-100'"
         >
             <div class="text-lg font-bold text-gray-600 mb-8">

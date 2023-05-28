@@ -1,10 +1,11 @@
 <script setup lang="ts">
-    import BattleState, {Mode} from "~/lib/BattleState"
+    import BattleState, { Mode } from "~/lib/BattleState"
     import ForestLocation from "~/lib/ForestLocation"
     import InputController from "~/lib/InputController"
     import Player from "~/lib/Models/Player"
     import Creature from "~/components/UI/Creature.vue"
     import PinnedCommands from "~/components/UI/PinnedCommands.vue"
+    import BattleLog from "~/components/UI/BattleLog.vue"
 
     defineOptions({
         name: 'BattleView',
@@ -40,22 +41,22 @@
 </script>
 
 <template>
-    <div class="p-12">
-        <div class="flex items-center justify-between">
-            <Creature :creature="battle.player" acting />
+    <div class="p-12 w-full flex flex-col gap-12">
+        <div class="flex gap-24">
+            <Creature class="w-80" :creature="battle.player" acting />
 
-            <Creature
-                v-for="(creature, $i) in battle.location.creatures"
-                :key="$i"
-                :creature="creature"
-            />
+            <div class="w-full grid grid-cols-3 gap-12">
+                <Creature
+                    v-for="(creature, $i) in battle.location.creatures"
+                    :key="$i"
+                    :creature="creature"
+                />
+            </div>
         </div>
 
-        <div class="mt-12">
-            <PinnedCommands />
-        </div>
+        <BattleLog :log="battle.log" />
 
-        <br>
+        <PinnedCommands />
 
         <div class="fixed bottom-12 w-[40rem] left-1/2 -translate-x-1/2 flex flex-col gap-2">
             <div v-if="command.length" class="text-center text-xl">
