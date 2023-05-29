@@ -23,7 +23,7 @@ export default class HitCommand extends Command {
             return
         }
 
-        const damage = actor.dealDamage(target)
+        const damage = actor.dealDamage(actor.stats.strength, target)
 
         battle.log.record(`:actor hit :target for :damage damage.`, {
             actor,

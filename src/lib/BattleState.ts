@@ -1,9 +1,10 @@
 import State from "~/lib/State"
 import EventBus from "~/lib/EventBus"
-import type Location from "~/lib/Location";
+import type Location from "~/lib/Location"
 import type Player from '~/lib/Models/Player'
 import TimeController from '~/lib/TimeController'
 import BattleLog from '~/lib/BattleLog'
+import Formatter from '~/lib/Formatter'
 
 export enum Mode {
     Normal = "Normal",
@@ -52,5 +53,26 @@ export default class BattleState extends State {
         this.state.mode = mode
 
         this.eventBus.emit("changeMode", mode, oldMode)
+    }
+
+    public start() {
+        this.time.start()
+        this.location.creatures.forEach(actor => {
+            this.time.interval(3 * 1000, () => {
+                const target = this.player
+
+                const damage = actor.dealDamage(actor.stats.strength, target)
+
+                this.log.record(`:actor hit :target for :damage damage.`, {
+                    actor,
+                    target,
+                    damage: Formatter.damage(damage),
+                })
+            })
+        })
+    }
+
+    public stop() {
+        this.time.stop()
     }
 }

@@ -23,12 +23,12 @@
 
     onMounted(() => {
         inputController.register()
-        battle.time.start()
+        battle.start()
     })
 
     onDeactivated(() => {
         inputController.unregister()
-        battle.time.stop()
+        battle.stop()
     })
 
     watch(mode, (mode) => {

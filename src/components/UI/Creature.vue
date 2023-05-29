@@ -28,10 +28,15 @@
 
             <div class="flex flex-col gap-4">
                 <div class="w-full flex flex-col gap-1">
-                    {{ creature.health }} / {{ creature.maxHealth }}
-                    <ProgressBar color="bg-red-400" :progress="creature.health" :max="creature.maxHealth" />
-                    {{ creature.mana }} / {{ creature.maxMana }}
-                    <ProgressBar color="bg-blue-400" :progress="creature.mana" :max="creature.maxMana" />
+                    <div v-if="creature.maxHealth !== undefined">
+                        {{ creature.health }} / {{ creature.maxHealth }}
+                        <ProgressBar color="bg-red-400" :progress="creature.health" :max="creature.maxHealth" />
+                    </div>
+
+                    <div v-if="creature.maxMana !== undefined">
+                        {{ creature.mana }} / {{ creature.maxMana }}
+                        <ProgressBar color="bg-blue-400" :progress="creature.mana" :max="creature.maxMana" />
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-3 gap-4 text-center">

@@ -2,7 +2,6 @@ import Creature from "~/lib/Models/Creature"
 
 export default class Player extends Creature {
     public maxHealth = 10
-    public maxMana = 50
 
     public stats = {
         strength: 1,

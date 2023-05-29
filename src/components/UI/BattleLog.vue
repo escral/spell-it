@@ -5,11 +5,9 @@
         name: 'BattleLog',
     })
 
-    const props = defineProps<{
+    defineProps<{
         log: BattleLog
     }>()
-
-    const reversedLog = computed(() => props.log.records.slice().reverse())
 
     const pad = (n: number) => n.toString().padStart(2, '0')
 
@@ -22,9 +20,9 @@
 
 <template>
     <div class="border-2 bg-white px-4 py-2 h-64 overflow-y-auto rounded">
-        <div v-for="(record, $i) in reversedLog" :key="$i">
-            <span class="font-mono text-xs text-gray-400 mr-2">{{ formatTime(record.time) }}</span>
-            <span v-html="log.formatRecord(record)" />
+        <div v-for="i in log.records.length" :key="i">
+            <span class="font-mono text-xs text-gray-400 mr-2">{{ formatTime(log.records.at(-i).time) }}</span>
+            <span v-html="log.formatRecord(log.records.at(-i))" />
         </div>
     </div>
 </template>

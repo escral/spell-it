@@ -2,8 +2,8 @@ export default abstract class Creature {
     declare public health: number
     declare public mana: number
 
-    declare public maxHealth: number
-    declare public maxMana: number
+    declare public maxHealth: number | undefined
+    declare public maxMana: number | undefined
 
     public stats: Stats = {
         strength: 0,
@@ -23,13 +23,16 @@ export default abstract class Creature {
     }
 
     public fullStats() {
-        this.health = this.maxHealth
-        this.mana = this.maxMana
+        if (this.maxHealth !== undefined) {
+            this.health = this.maxHealth
+        }
+
+        if (this.maxMana !== undefined) {
+            this.mana = this.maxMana
+        }
     }
 
-    dealDamage(target: Creature) {
-        const damage = this.stats.strength
-
+    dealDamage(damage: number, target: Creature) {
         return target.takeDamage(damage)
     }
 
