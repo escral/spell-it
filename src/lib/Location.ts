@@ -13,4 +13,8 @@ export default abstract class Location {
     addCreature(creature: Creature) {
         this.creatures.push(creature)
     }
+
+    removeCreature(creature: Creature) {
+        this.creatures = this.creatures.filter((c) => c !== creature)
+    }
 }

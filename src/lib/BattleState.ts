@@ -57,8 +57,9 @@ export default class BattleState extends State {
 
     public start() {
         this.time.start()
-        this.location.creatures.forEach(actor => {
-            this.time.interval(3 * 1000, () => {
+
+        this.time.interval(3 * 1000, () => {
+            this.location.creatures.forEach(actor => {
                 const target = this.player
 
                 const damage = actor.dealDamage(actor.stats.strength, target)
@@ -70,6 +71,22 @@ export default class BattleState extends State {
                 })
             })
         })
+
+        this.player.eventBus.on('die', () => {
+            this.log.record('Game over!')
+
+            this.changeMode(Mode.Paused)
+        })
+
+        for (const creature of this.location.creatures) {
+            creature.eventBus.on('die', () => {
+                this.log.record(`:creature died.`, {
+                    creature,
+                })
+
+                this.location.removeCreature(creature)
+            })
+        }
     }
 
     public stop() {

@@ -1,3 +1,5 @@
+import EventBus from "../EventBus"
+
 export default abstract class Creature {
     declare public health: number
     declare public mana: number
@@ -15,6 +17,10 @@ export default abstract class Creature {
 
     public commandStack: string[] = []
     public commandHistory: string[] = []
+
+    public eventBus = new EventBus<{
+        die(): void
+    }>()
 
     // ================
 
@@ -39,6 +45,10 @@ export default abstract class Creature {
     takeDamage(damage: number) {
         this.health = this.health - damage
 
+        if (this.health <= 0) {
+            this.die()
+        }
+
         return damage
     }
 
@@ -52,6 +62,10 @@ export default abstract class Creature {
         this.stats[stat] -= value
 
         return value
+    }
+
+    die() {
+        this.eventBus.emit('die')
     }
 }
 
